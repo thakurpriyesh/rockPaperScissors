@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+            background-color: #f0f2f5;
+            color: #333;
+            box-sizing: border-box; /* Ensures padding doesn't break layout */
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Main 3-Column Layout Container */
+        #main-layout {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: stretch; /* Make columns equal height */
+            width: 90vw;
+            max-width: 1400px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            min-height: 450px;
+        }
+
+        /* --- Left Panel: Controls & Score --- */
+        #left-panel {
+            flex-basis: 25%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            padding: 20px;
+            border-right: 2px solid #f0f2f5;
+        }
+        #controls-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Adds space between control elements */
+        }
+        #controls-container label {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #333;
+        }
+        #controls-container select,
+        #controls-container button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #controls-container select {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        #start-button {
+            background-color: #27ae60;
+            color: white;
+        }
+        #start-button:hover {
+            background-color: #2ecc71;
+        }
+        #stop-button {
+            background-color: #c0392b;
+            color: white;
+            display: none; /* Hidden by default */
+        }
+        #stop-button:hover {
+            background-color: #e74c3c;
+        }
+        #score-container {
+            margin-top: 20px;
+            width: 100%;
+        }
+        #score-container h2 {
+            font-size: 1.8em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        #score {
+            font-size: 1.5em;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        /* --- Center Panel: Game Status --- */
+        #center-panel {
+            flex-basis: 35%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            min-height: 300px;
+        }
+        #status {
+            font-size: 2em;
+            font-weight: 700;
+            color: #3498db;
+            min-height: 1.5em;
+            text-align: center;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 2.2em;
+            color: #2c3e50;
+            font-weight: bold;
+            text-align: center;
+            min-height: 2.2em;
+            line-height: 1.2;
+        }
+
+        /* --- Right Panel: Camera --- */
+        #right-panel {
+            flex-basis: 40%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #video-container {
+            position: relative;
+            width: 100%; /* Fills the right panel */
+            max-width: 640px; /* Max size */
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            padding-top: 75%; /* 4:3 Aspect Ratio */
+        }
+        video, canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1);
+        }
+        video {
+            object-fit: cover;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            body {
+                padding: 10px 0; /* Reduce padding */
+            }
+            #main-layout {
+                flex-direction: column; /* Stack panels vertically */
+                width: 95vw;
+                align-items: center;
+            }
+            #left-panel, #center-panel, #right-panel {
+                flex-basis: auto; /* Reset basis */
+                width: 100%;
+                max-width: 500px; /* Limit width */
+                border-right: none;
+                padding: 15px;
+            }
+            
+            /* 💡 HERE ARE THE CHANGES 💡 */
+            #left-panel {
+                /* margin-top: -50px; */
+                border-bottom: 2px solid #f0f2f5;
+                order: 1; /* Moves Score/Controls to the top */
+                flex-direction: column; /* Keeps score above controls */
+            }
+            #center-panel {
+                margin-top: -50px;
+                order: 3; /* Moves Status to the bottom */
+            }
+            #right-panel {
+                order: 2; /* Moves Camera to the middle */
+            }
+            /* 💡 END OF CHANGES 💡 */
+            
+            #score-container {
+                margin-top: 15px;
+            }
+            h1 { font-size: 1.8em; }
+            #status { font-size: 1.5em; }
+            #result { font-size: 1.8em; }
+
+            #video-container {
+                padding-top: 56.25%; /* 16:9 aspect ratio (shorter) */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Rock Paper Scissors</h1>
+
+    <div id="main-layout">
+
+        <div id="left-panel">
+            <div id="controls-container">
+                <label for="rounds-selector">Select Rounds:</label>
+                <select id="rounds-selector">
+                    <option value="3">3 Rounds</option>
+                    <option value="4">4 Rounds</option>
+                    <option value="5">5 Rounds</option>
+                    <option value="6">6 Rounds</option>
+                    <option value="7">7 Rounds</option>
+                    <option value="8">8 Rounds</option>
+                    <option value="9">9 Rounds</option>
+                    <option value="10">10 Rounds</option>
+                </select>
+                <button id="start-button">Start Game</button>
+                <button id="stop-button">Stop Game</button>
+            </div>
+            
+            <div id="score-container">
+                <h2>SCORE</h2>
+                <div id="score">Player: 0 <br> Computer: 0</div>
+            </div>
+        </div>
+
+        <div id="center-panel">
+            <div id="status">Press Start to play!</div>
+            <div id="result"></div>
+        </div>
+
+        <div id="right-panel">
+            <div id="video-container">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="output_canvas"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.13.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose@0.0.7/dist/handpose.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fingerpose@0.0.2/dist/fingerpose.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
